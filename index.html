@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprende España - Guía Educativa Interactiva</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+
+        .region-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+        }
+
+        .region-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .region-card.visited {
+            opacity: 0.6;
+            filter: grayscale(0.4);
+            border-style: dashed;
+        }
+
+        .region-card.active {
+            opacity: 1 !important;
+            filter: grayscale(0) !important;
+            border: 2px solid #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .info-panel-content {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .data-badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal {
+            display: none;
+            z-index: 100;
+        }
+        .modal.active {
+            display: flex;
+        }
+    </style>
+<style type="text/css">
+.grande { font-size: 60px; }
+</style>
+<script>
+// Escribir aqui el código Javascript
+</script>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.fixed{position:fixed}.sticky{position:sticky}.inset-0{inset:0px}.top-0{top:0px}.top-28{top:7rem}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mb-2{margin-bottom:0.5rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.mt-12{margin-top:3rem}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.h-12{height:3rem}.h-24{height:6rem}.h-5{height:1.25rem}.h-6{height:1.5rem}.min-h-\[600px\]{min-height:600px}.min-h-screen{min-height:100vh}.w-12{width:3rem}.w-24{width:6rem}.w-5{width:1.25rem}.w-6{width:1.5rem}.w-full{width:100%}.max-w-7xl{max-width:80rem}.max-w-lg{max-width:32rem}.flex-shrink-0{flex-shrink:0}.flex-grow{flex-grow:1}.transform{transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.flex-col{flex-direction:column}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-8{gap:2rem}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-6 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.5rem * var(--tw-space-y-reverse))}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-slate-100{--tw-border-opacity:1;border-color:rgb(241 245 249 / var(--tw-border-opacity, 1))}.border-slate-200{--tw-border-opacity:1;border-color:rgb(226 232 240 / var(--tw-border-opacity, 1))}.bg-blue-100{--tw-bg-opacity:1;background-color:rgb(219 234 254 / var(--tw-bg-opacity, 1))}.bg-blue-50{--tw-bg-opacity:1;background-color:rgb(239 246 255 / var(--tw-bg-opacity, 1))}.bg-blue-600{--tw-bg-opacity:1;background-color:rgb(37 99 235 / var(--tw-bg-opacity, 1))}.bg-slate-200{--tw-bg-opacity:1;background-color:rgb(226 232 240 / var(--tw-bg-opacity, 1))}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-slate-900\/80{background-color:rgb(15 23 42 / 0.8)}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.p-2{padding:0.5rem}.p-4{padding:1rem}.p-8{padding:2rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-8{padding-left:2rem;padding-right:2rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-10{padding-top:2.5rem;padding-bottom:2.5rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.py-6{padding-top:1.5rem;padding-bottom:1.5rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-\[10px\]{font-size:10px}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.italic{font-style:italic}.tracking-tight{letter-spacing:-0.025em}.tracking-wider{letter-spacing:0.05em}.tracking-widest{letter-spacing:0.1em}.text-blue-500{--tw-text-opacity:1;color:rgb(59 130 246 / var(--tw-text-opacity, 1))}.text-blue-600{--tw-text-opacity:1;color:rgb(37 99 235 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139 / var(--tw-text-opacity, 1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105 / var(--tw-text-opacity, 1))}.text-slate-700{--tw-text-opacity:1;color:rgb(51 65 85 / var(--tw-text-opacity, 1))}.text-slate-800{--tw-text-opacity:1;color:rgb(30 41 59 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-blue-200{--tw-shadow-color:#bfdbfe;--tw-shadow:var(--tw-shadow-colored)}.backdrop-blur-md{--tw-backdrop-blur:blur(12px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-500{transition-duration:500ms}.hover\:scale-105:hover{--tw-scale-x:1.05;--tw-scale-y:1.05;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.hover\:bg-blue-500:hover{--tw-bg-opacity:1;background-color:rgb(59 130 246 / var(--tw-bg-opacity, 1))}.hover\:bg-blue-600:hover{--tw-bg-opacity:1;background-color:rgb(37 99 235 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-50:hover{--tw-bg-opacity:1;background-color:rgb(248 250 252 / var(--tw-bg-opacity, 1))}@media (min-width: 768px){.md\:flex-row{flex-direction:row}.md\:p-8{padding:2rem}}@media (min-width: 1024px){.lg\:col-span-5{grid-column:span 5 / span 5}.lg\:col-span-7{grid-column:span 7 / span 7}.lg\:grid-cols-12{grid-template-columns:repeat(12, minmax(0, 1fr))}}</style></head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 py-6 px-4 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-600 p-2 rounded-lg text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-extrabold text-slate-800 tracking-tight">GeoAprende España</h1>
+                    <p class="text-slate-500 text-sm">Explora, estudia y descubre cada comunidad</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="toggleModal('modal-instrucciones')" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold transition">Instrucciones</button>
+                <button onclick="startQuickTest()" id="test-btn" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition">Prueba rápida</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto w-full p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 flex-grow">
+        
+        <!-- Panel Izquierdo: Tarjetas -->
+        <div class="lg:col-span-7 space-y-6">
+            <div class="flex justify-between items-center">
+                <h2 class="text-lg font-bold text-slate-700 uppercase tracking-wider">Selecciona una Tarjeta</h2>
+                <span id="counter" class="text-xs font-bold bg-slate-200 text-slate-600 px-3 py-1 rounded-full">0 / 18 VISITADAS</span>
+            </div>
+            
+            <div class="card-grid" id="card-container">
+                <!-- Generado por JS -->
+            </div>
+        </div>
+
+        <!-- Panel Derecho: Información Exhaustiva -->
+        <div class="lg:col-span-5">
+            <div id="info-panel" class="bg-white rounded-3xl p-8 shadow-xl border border-slate-100 min-h-[600px] sticky top-28 transition-all duration-500 flex flex-col items-center justify-center text-center">
+                <div id="placeholder-content">
+                    <div class="w-24 h-24 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">¿Preparado para aprender?</h3>
+                    <p class="text-slate-500">Pulsa una de las tarjetas de la izquierda para desplegar toda la información geográfica y económica.</p>
+                </div>
+                <div id="region-details" class="hidden w-full text-left">
+                    <!-- Contenido dinámico -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-10 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-slate-400 font-bold uppercase tracking-widest text-[10px] mb-4">Proyecto Educativo</p>
+            <p class="text-slate-700 text-lg mb-2 italic">“El conocimiento es la mochila que más pesa al principio, pero la que más te ayuda a caminar”</p>
+            <p class="text-slate-600 mb-6">Creado por <span class="font-extrabold text-blue-600 underline">El loco de la mochila</span></p>
+            <a href="https://blogsaverroes.juntadeandalucia.es/ellocodelamochila/" target="_blank" class="inline-flex items-center gap-3 bg-slate-900 text-white px-8 py-3 rounded-full font-bold hover:bg-blue-600 transition-all transform hover:scale-105">
+                Visita mi Blog
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+            </a>
+        </div>
+    </footer>
+
+    <!-- Modal Instrucciones -->
+    <div id="modal-instrucciones" class="modal fixed inset-0 bg-slate-900/80 backdrop-blur-md items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl">
+            <h3 class="text-2xl font-extrabold text-slate-800 mb-6">Guía de Aprendizaje</h3>
+            <ul class="space-y-4 mb-8">
+                <li class="flex gap-4">
+                    <div class="bg-blue-100 text-blue-600 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm">1</div>
+                    <p class="text-slate-600"><strong>Explora las tarjetas:</strong> Cada una representa una Comunidad Autónoma de España.</p>
+                </li>
+                <li class="flex gap-4">
+                    <div class="bg-blue-100 text-blue-600 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm">2</div>
+                    <p class="text-slate-600"><strong>Estudia los datos:</strong> Al pulsar, verás población, economía y datos curiosos para aprender.</p>
+                </li>
+                <li class="flex gap-4">
+                    <div class="bg-blue-100 text-blue-600 w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm">3</div>
+                    <p class="text-slate-600"><strong>Control de progreso:</strong> Las tarjetas que ya has leído se volverán opacas para que sepas qué te falta por aprender.</p>
+                </li>
+            </ul>
+            <button onclick="toggleModal('modal-instrucciones')" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-500 transition shadow-lg shadow-blue-200">¡Empezar a aprender!</button>
+        </div>
+    </div>
+
+    <script>
+        const regionsData = {
+            andalucia: { name: "Andalucía", capital: "Sevilla", population: "8.500.000", area: "87.268 km²", economy: "Turismo, agricultura intensiva (aceite de oliva), industria aeroespacial y servicios.", color: "bg-green-600", facts: "Es la cuna del flamenco y posee el único desierto de Europa (Tabernas).", icon: "☀️" },
+            madrid: { name: "C. de Madrid", capital: "Madrid", population: "6.751.000", area: "8.028 km²", economy: "Servicios financieros, logística, administración pública y centros tecnológicos.", color: "bg-red-600", facts: "El Kilómetro Cero en la Puerta del Sol es el centro radial de todas las carreteras españolas.", icon: "🏛️" },
+            cataluna: { name: "Cataluña", capital: "Barcelona", population: "7.780.000", area: "32.108 km²", economy: "Industria química, automoción, turismo masivo y sector textil.", color: "bg-yellow-500", facts: "Tiene su propia lengua cooficial y es hogar de las obras maestras de Gaudí.", icon: "🎨" },
+            galicia: { name: "Galicia", capital: "Santiago", population: "2.700.000", area: "29.574 km²", economy: "Pesca, construcción naval, sector textil (Inditex) y ganadería.", color: "bg-blue-500", facts: "La Torre de Hércules es el faro romano en funcionamiento más antiguo del mundo.", icon: "🐚" },
+            valencia: { name: "C. Valenciana", capital: "Valencia", population: "5.057.000", area: "23.255 km²", economy: "Turismo de playa, exportación de cítricos e industria cerámica.", color: "bg-orange-500", facts: "Es la tierra de la paella original y las famosas fiestas de las Fallas.", icon: "🥘" },
+            asturias: { name: "Asturias", capital: "Oviedo", population: "1.011.000", area: "10.603 km²", economy: "Siderurgia, minería histórica, lácteos y turismo rural.", color: "bg-blue-600", facts: "En Covadonga se inició la Reconquista española en el año 722.", icon: "🏔️" },
+            cantabria: { name: "Cantabria", capital: "Santander", population: "582.000", area: "5.321 km²", economy: "Ganadería vacuna, procesado de pescado y turismo.", color: "bg-red-500", facts: "La cueva de Altamira es conocida como la 'Capilla Sixtina' del arte rupestre.", icon: "🐂" },
+            paisvasco: { name: "País Vasco", capital: "Vitoria", population: "2.220.000", area: "7.234 km²", economy: "Industria metalúrgica, energías renovables, banca y alta gastronomía.", color: "bg-green-700", facts: "El Euskera es una lengua 'aislada', sin relación conocida con ningún otro idioma.", icon: "⚓" },
+            navarra: { name: "Navarra", capital: "Pamplona", population: "661.000", area: "10.391 km²", economy: "Automoción (Volkswagen), energías renovables y hortalizas de alta calidad.", color: "bg-red-700", facts: "Los encierros de San Fermín son mundialmente famosos gracias a Ernest Hemingway.", icon: "🍷" },
+            aragon: { name: "Aragón", capital: "Zaragoza", population: "1.326.000", area: "47.719 km²", economy: "Logística (PLAZA), automoción (Opel) y energía hidroeléctrica.", color: "bg-yellow-600", facts: "El Reino de Aragón fue uno de los pilares de la actual España.", icon: "⚔️" },
+            rioja: { name: "La Rioja", capital: "Logroño", population: "319.000", area: "5.045 km²", economy: "Producción de vino con Denominación de Origen Calificada y calzado.", color: "bg-red-900", facts: "En los monasterios de San Millán se escribieron las primeras palabras en castellano.", icon: "🍇" },
+            castillaleon: { name: "Castilla y León", capital: "Valladolid", population: "2.383.000", area: "94.223 km²", economy: "Cereal, ganadería, automoción e industria agroalimentaria.", color: "bg-stone-500", facts: "Es la región con más bienes declarados Patrimonio de la Humanidad en el mundo.", icon: "🏰" },
+            castillalamancha: { name: "C. La Mancha", capital: "Toledo", population: "2.049.000", area: "79.463 km²", economy: "Viticultura, queso manchego, energía solar y turismo cultural.", color: "bg-orange-700", facts: "Es el escenario principal de las aventuras de Don Quijote de la Mancha.", icon: "🌬️" },
+            extremadura: { name: "Extremadura", capital: "Mérida", population: "1.063.000", area: "41.634 km²", economy: "Agricultura (pimentón, tabaco), corcho y ganadería porcina.", color: "bg-emerald-600", facts: "Mérida tiene uno de los conjuntos arqueológicos romanos mejor conservados de Europa.", icon: "🐖" },
+            murcia: { name: "Murcia", capital: "Murcia", population: "1.511.000", area: "11.313 km²", economy: "Exportación de frutas y hortalizas, industria química y turismo.", color: "bg-red-400", facts: "El Mar Menor es la albufera de agua salada más grande de España.", icon: "🍋" },
+            baleares: { name: "I. Baleares", capital: "Palma", population: "1.171.000", area: "4.992 km²", economy: "Turismo internacional, servicios y náutica.", color: "bg-sky-500", facts: "Menorca es Reserva de la Biosfera por su increíble estado de conservación.", icon: "🏝️" },
+            canarias: { name: "I. Canarias", capital: "S.C. Tenerife / Las Palmas", population: "2.175.000", area: "7.447 km²", economy: "Turismo, agricultura de plátano y puertos internacionales.", color: "bg-yellow-400", facts: "El Teide (3.715m) es el pico más alto de España y el tercer volcán más grande del mundo.", icon: "🌋" },
+            ceutamelilla: { name: "Ceuta y Melilla", capital: "Ciudades Autónomas", population: "170.000", area: "32 km²", economy: "Comercio transfronterizo, servicios y actividad portuaria.", color: "bg-slate-500", facts: "Son los únicos territorios de la Unión Europea situados físicamente en el continente africano.", icon: "🌍" }
+        };
+
+        const visitedRegions = new Set();
+
+        function createCards() {
+            const container = document.getElementById('card-container');
+            Object.keys(regionsData).forEach(key => {
+                const data = regionsData[key];
+                const card = document.createElement('div');
+                card.className = `region-card ${key} bg-white rounded-2xl p-4 flex flex-col items-center justify-center gap-2 text-center group`;
+                card.innerHTML = `
+                    <div class="w-12 h-12 ${data.color} rounded-xl text-white flex items-center justify-center text-2xl shadow-lg group-hover:rotate-12 transition-transform">
+                        ${data.icon}
+                    </div>
+                    <span class="text-xs font-extrabold text-slate-700">${data.name}</span>
+                    <div class="visited-check hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                `;
+                card.onclick = () => selectRegion(key);
+                container.appendChild(card);
+            });
+        }
+
+        function selectRegion(key) {
+            const data = regionsData[key];
+            const panel = document.getElementById('info-panel');
+            const details = document.getElementById('region-details');
+            const placeholder = document.getElementById('placeholder-content');
+
+            // Actualizar estado de visita
+            visitedRegions.add(key);
+            updateProgress();
+
+            // Resaltar tarjeta activa
+            document.querySelectorAll('.region-card').forEach(c => {
+                c.classList.remove('active');
+                if (visitedRegions.has(c.classList[1])) {
+                    c.classList.add('visited');
+                    c.querySelector('.visited-check').classList.remove('hidden');
+                }
+            });
+            const activeCard = document.querySelector(`.region-card.${key}`);
+            activeCard.classList.add('active');
+
+            // Mostrar detalles
+            placeholder.classList.add('hidden');
+            details.classList.remove('hidden');
+            
+            panel.className = `bg-white rounded-3xl p-8 shadow-2xl border-t-8 border-slate-100 transition-all duration-300 flex flex-col items-start justify-start text-left sticky top-28`;
+            panel.style.borderTopColor = getComputedStyle(activeCard.querySelector('div')).backgroundColor;
+
+            details.innerHTML = `
+                <div class="info-panel-content space-y-6">
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                             <div class="px-3 py-1 bg-slate-100 rounded-full text-[10px] font-bold text-slate-500 uppercase tracking-tighter">Ficha Técnica</div>
+                             <span class="text-2xl">${data.icon}</span>
+                        </div>
+                        <h2 class="text-4xl font-black text-slate-800">${data.name}</h2>
+                        <p class="text-blue-600 font-bold text-lg">Capital: ${data.capital}</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="data-badge bg-slate-50 border border-slate-100">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase">Población</span>
+                            <span class="text-slate-800 font-extrabold text-sm">${data.population} hab.</span>
+                        </div>
+                        <div class="data-badge bg-slate-50 border border-slate-100">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase">Extensión</span>
+                            <span class="text-slate-800 font-extrabold text-sm">${data.area}</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h4 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Motor Económico
+                        </h4>
+                        <p class="text-slate-600 text-sm leading-relaxed">${data.economy}</p>
+                    </div>
+
+                    <div class="bg-blue-50 border border-blue-100 p-5 rounded-2xl relative overflow-hidden group">
+                        <div class="absolute -right-4 -top-4 text-blue-100 opacity-20 transform -rotate-12 group-hover:scale-110 transition-transform">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <h4 class="text-sm font-bold text-blue-800 mb-2">¿Sabías qué?</h4>
+                        <p class="text-blue-700 text-sm font-medium leading-relaxed italic z-10 relative">"${data.facts}"</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateProgress() {
+            const count = visitedRegions.size;
+            const total = Object.keys(regionsData).length;
+            document.getElementById('counter').innerText = `${count} / ${total} VISITADAS`;
+        }
+
+        function toggleModal(id) {
+            document.getElementById(id).classList.toggle('active');
+        }
+
+        async function startQuickTest() {
+            const btn = document.getElementById('test-btn');
+            const keys = ['madrid', 'andalucia', 'cataluna', 'navarra', 'canarias'];
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+
+            for (const key of keys) {
+                selectRegion(key);
+                await new Promise(r => setTimeout(r, 1200));
+            }
+
+            btn.disabled = false;
+            btn.classList.remove('opacity-50');
+            btn.innerText = "Prueba completada";
+            setTimeout(() => btn.innerText = "Prueba rápida", 3000);
+        }
+
+        // Inicializar
+        window.onload = createCards;
+    </script>
+
+
+</body></html>
